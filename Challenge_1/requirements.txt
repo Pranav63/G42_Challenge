@@ -1,0 +1,24 @@
+
+# Core framework
+fastapi==0.104.1
+uvicorn[standard]==0.24.0
+
+# Computer vision
+opencv-python==4.8.1.78
+numpy==1.24.3
+ultralytics
+
+# Database
+sqlalchemy==2.0.23
+
+# Validation
+pydantic==2.5.0
+pydantic-settings
+# File upload support
+python-multipart==0.0.6
+
+# Image processing
+Pillow==10.1.0
+
+# Environment variables
+python-dotenv==1.0.0
