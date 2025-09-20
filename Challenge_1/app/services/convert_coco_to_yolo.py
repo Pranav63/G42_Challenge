@@ -4,7 +4,6 @@ import shutil
 
 
 def convert_coco_to_yolo():
-    # Load COCO annotations
     with open("storage/images/_annotations.coco.json", "r") as f:
         coco = json.load(f)
 
@@ -13,7 +12,7 @@ def convert_coco_to_yolo():
     Path("yolo_data/labels/train").mkdir(parents=True, exist_ok=True)
     Path("yolo_data/labels/val").mkdir(parents=True, exist_ok=True)
 
-    # image_id to filename mapping
+    # image_id : filename mapping
     id_to_file = {img["id"]: img["file_name"] for img in coco["images"]}
     id_to_dims = {img["id"]: (img["width"], img["height"]) for img in coco["images"]}
 

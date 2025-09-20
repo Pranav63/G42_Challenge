@@ -7,14 +7,13 @@ from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from contextlib import asynccontextmanager
-import logging
 import time
 
 from app.core import settings, setup_logging
 from app.models.database import init_db
 from app.api import router
 
-# Setup logging
+
 logger = setup_logging(
     level="DEBUG" if settings.debug else "INFO", log_file="logs/app.log"
 )
@@ -23,21 +22,17 @@ logger = setup_logging(
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     """
-    Application lifecycle management.
     Runs on startup and shutdown.
     """
-    # Startup
     logger.info("Starting Coin Detection API")
-    init_db()  # Create database tables
+    init_db()  
     logger.info("Database initialized")
 
-    yield  # Application runs
+    yield 
 
-    # Shutdown
     logger.info("Shutting down Coin Detection API")
 
 
-# Create FastAPI app
 app = FastAPI(
     title=settings.app_name,
     version=settings.app_version,
@@ -45,7 +40,6 @@ app = FastAPI(
     lifespan=lifespan,
 )
 
-# Add CORS middleware for browser access
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -55,7 +49,6 @@ app.add_middleware(
 )
 
 
-# Request timing middleware
 @app.middleware("http")
 async def add_process_time(request: Request, call_next):
     start_time = time.time()
@@ -65,17 +58,14 @@ async def add_process_time(request: Request, call_next):
     return response
 
 
-# Include API routes
 app.include_router(router, prefix=settings.api_prefix, tags=["coins"])
 
 
-# Health check endpoint
 @app.get("/health")
 async def health_check():
     return {"status": "healthy", "version": settings.app_version}
 
 
-# Root endpoint
 @app.get("/")
 async def root():
     return {
@@ -86,7 +76,6 @@ async def root():
     }
 
 
-# Global exception handler
 @app.exception_handler(Exception)
 async def global_exception_handler(request: Request, exc: Exception):
     logger.error(f"Global exception: {str(exc)}", exc_info=True)

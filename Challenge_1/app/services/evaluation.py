@@ -2,7 +2,6 @@
 Model evaluation using Intersection over Union (IoU).
 IoU: This measures overlap between predicted and actual bounding boxes.
 """
-
 from typing import List, Dict, Tuple
 import logging
 

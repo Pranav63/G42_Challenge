@@ -44,7 +44,6 @@ async def upload_image(
     """
     start_time = time.time()
 
-    # Validation
     if not file.content_type.startswith("image/"):
         raise HTTPException(400, "File must be an image")
 
@@ -61,7 +60,6 @@ async def upload_image(
         warning_message = ""
 
         if has_yolo:
-            # Using trained YOLO
             detected_coins, is_training_image = yolo_detector.detect(
                 image_array, file.filename
             )
@@ -269,7 +267,7 @@ async def evaluate_detection(
 
 
 def create_mask_visualization(image: np.ndarray, mask: np.ndarray) -> np.ndarray:
-    """Create side-by-side visualization of image and mask."""
+    """visualization of image and mask."""
     if len(image.shape) == 2:
         image = cv2.cvtColor(image, cv2.COLOR_GRAY2BGR)
     elif image.shape[2] == 4:  # RGBA
