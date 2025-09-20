@@ -9,29 +9,63 @@ venv/
 .venv/
 *.egg-info/
 
-# Database
+# Database files
 *.db
 *.sqlite
 *.sqlite3
 
-# Storage
-storage/images/*
-!storage/images/.gitkeep
+# Challenge 1 - Training data and models
+Challenge_1/storage/
+Challenge_1/api_uploads/
+Challenge_1/yolo_data/
+Challenge_1/runs/
+Challenge_1/logs/
+Challenge_1/coin_model_final.pt
+Challenge_1/yolov8s.pt
+Challenge_1/training_images_list.json
+Challenge_1/coin_detection.db
+
+# Challenge 2 - Data and logs
+Challenge_2/image_frames.db
+Challenge_2/logs/
+
+# Model files and checkpoints
+*.pt
+*.pth
+*.ckpt
+*.h5
+*.pkl
+*.joblib
+
+# Training artifacts
+runs/
+wandb/
+tensorboard/
+mlruns/
+
+# Data files
+*.csv
+*.json
+!requirements.txt
+!package.json
+!**/config*.json
 
 # Logs
 logs/
 *.log
 
-# Environment
+# Environment files
 .env
 .env.local
+.env.production
 
-# IDE
+# IDE files
 .vscode/
 .idea/
 *.swp
 *.swo
 .DS_Store
+Thumbs.db
 
 # Testing
 .pytest_cache/
@@ -39,6 +73,33 @@ logs/
 htmlcov/
 test_*.jpg
 test_*.png
+test_*.csv
 
 # Docker
 docker-compose.override.yml
+.dockerignore
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Image files (if you don't want to store images)
+*.jpg
+*.jpeg
+*.png
+*.gif
+*.bmp
+*.tiff
+*.webp
+
+# Keep important config files
+!docs/
+!README.md
+!Dockerfile
+!docker-compose.yml
+!.github/

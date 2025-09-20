@@ -1,6 +1,0 @@
-names:
-- coin
-nc: 1
-path: C:\Users\arorapra\OneDrive - Hewlett Packard Enterprise\Desktop\G42_Challenge\Challenge_1\yolo_data
-train: images/train
-val: images/val
