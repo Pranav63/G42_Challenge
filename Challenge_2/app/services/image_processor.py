@@ -32,8 +32,10 @@ class ImageProcessor:
     def resize_image_row(self, row_data: np.ndarray) -> np.ndarray:
         if len(row_data) == self.target_width:
             return row_data
-
-        row_2d = row_data.reshape(1, -1)
+        # Handle NaN values before resizing
+        clean_data = np.nan_to_num(row_data, nan=0.0)
+        
+        row_2d = clean_data.reshape(1, -1)
         resized = cv2.resize(
             row_2d.astype(np.float32),
             (self.target_width, 1),
@@ -41,6 +43,7 @@ class ImageProcessor:
         )
 
         return resized.flatten()
+
 
     def process_csv_file(self, csv_path: str, db: Session) -> Dict:
         start_time = time.time()

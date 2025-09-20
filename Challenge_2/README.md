@@ -2,11 +2,7 @@
 
 # Challenge 2: Image Processing Pipeline
 
-A high-performance API for processing CSV-based image data with resizing and colormap application capabilities.
-
-## 🎯 Overview
-
-This solution processes large CSV files containing image data (5461 rows × 200 columns), resizes each row from 200 to 150 pixels using linear interpolation, stores the data efficiently in SQLite, and provides fast retrieval with optional colormap application.
+This solution processes large CSV files containing image data (5461 rows × 200 columns), resizes each row from 200 to 150 pixels using linear interpolation, stores the data in SQLite, and provides retrieval with optional colormap application.
 
 ## 🏗️ Architecture
 
@@ -69,7 +65,23 @@ flowchart TD
     Map --> Return2[Return RGB]
 ```
 
-## 🚀 Quick Start
+## Project Structure
+
+```
+challenge2/
+├── app/
+│   ├── api/          # API endpoints
+│   ├── core/         # Configuration
+│   ├── models/       # Database models
+│   ├── services/     # Processing logic
+│   └── main.py       # Application entry
+├── tests/            # Unit tests
+├── requirements.txt  # Dependencies
+└── docker-compose.yml
+```
+
+
+## Start up Process
 
 ### Using Docker
 
@@ -115,44 +127,22 @@ uvicorn app.main:app --reload --port 8001
    - Endpoint: `GET /api/v1/colormaps`  
    - Response: List of available colormaps  
 
-## 🧪 Testing
+## Testing
 
 Run unit tests:
 ```bash
 pytest tests/ -v --cov=app --cov-report=html
 ```
 
-## 📊 Performance Metrics
-
-- Processing Speed: 10–20 rows/ms
-- Total Storage: ~800KB for 5461 frames
-- Query Speed: < 50ms for range queries
-- Batch Size: 100 rows (optimal)
-
-## 🎨 Available Colormaps
+## Available Colormaps
 
 - viridis, jet, hot, cool, hsv
 - rainbow, plasma, inferno, magma, twilight
 
-## 🛠️ Technology Stack
+## Technology Stack
 
 - FastAPI 0.104.1
 - Pandas 2.1.3, NumPy 1.24.3
 - OpenCV 4.8.1
 - SQLite
 - Uvicorn
-
-## 📁 Project Structure
-
-```
-challenge2/
-├── app/
-│   ├── api/          # API endpoints
-│   ├── core/         # Configuration
-│   ├── models/       # Database models
-│   ├── services/     # Processing logic
-│   └── main.py       # Application entry
-├── tests/            # Unit tests
-├── requirements.txt  # Dependencies
-└── docker-compose.yml
-```

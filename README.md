@@ -66,7 +66,6 @@ graph TB
 **Why This Approach Works:**
 - Data-driven learning vs manual parameter tuning
 - Robust to lighting conditions and complex backgrounds
-- Professional ML pipeline with proper validation
 - Scalable to new coin types with additional training data
 
 ### Challenge 2: CSV Processing
@@ -74,8 +73,7 @@ graph TB
 **Technical Implementation:**
 1. **Data Processing**: Pandas for efficient CSV parsing of 5000+ rows
 2. **Resizing Algorithm**: Linear interpolation for 200→150 column transformation
-3. **Storage Strategy**: Binary blob storage in SQLite for compact, queryable data
-4. **Visualization**: On-demand colormap application with 10+ options
+3. **Visualization**: On-demand colormap application with 10+ options
 
 **Key Architectural Choices:**
 - **Linear Interpolation**: Simple, fast, and effective for 1D signal processing
@@ -83,27 +81,15 @@ graph TB
 - **Batch Processing**: 100-row batches for memory efficiency
 - **On-Demand Rendering**: Apply colormaps only when requested
 
-**Performance Metrics:**
-- CSV Processing: 10-20 rows/millisecond
-- Total Processing (5461 rows): ~2.5 seconds
-- Query Response: <50ms
-- Storage Efficiency: 1.2MB for complete dataset
-
 ## Production Considerations
 
-Both solutions implement enterprise-grade practices:
+Both solutions implement best practices:
 
 **Reliability:**
-- Comprehensive error handling and input validation
+- Detailed error handling and input validation
 - Database transaction management
 - Graceful fallback mechanisms
 - Structured logging throughout
-
-**Performance:**
-- Sub-200ms response times for detection
-- Efficient binary storage and retrieval
-- Optimized batch processing
-- Memory-conscious design
 
 **Maintainability:**
 - Clean separation of concerns

@@ -37,7 +37,7 @@ async def upload_csv_file(
             message=f"Successfully processed {result['rows_processed']} rows",
             rows_processed=result["rows_processed"],
             processing_time_ms=result["processing_time_ms"],
-            errors=result["errors"][:10],  # Limit errors in response
+            errors=result["errors"][:10], 
         )
 
     except Exception as e:

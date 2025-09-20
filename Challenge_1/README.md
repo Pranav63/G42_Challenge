@@ -161,6 +161,13 @@ curl -X POST "http://localhost:8000/api/v1/images/upload" \
 
 ***
 
+## Testing
+
+Run unit tests:
+```bash
+pytest tests/ -v --cov=app --cov-report=html
+```
+
 ## Tech Stack
 
 | Component   | Technology     | Why We Chose It                                  |

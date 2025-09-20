@@ -1,7 +1,11 @@
-
 # Core framework
 fastapi==0.104.1
 uvicorn[standard]==0.24.0
+starlette==0.27.0
+
+# Testing
+pytest==7.4.3
+httpx==0.25.2
 
 # Computer vision
 opencv-python==4.8.1.78
@@ -13,7 +17,8 @@ sqlalchemy==2.0.23
 
 # Validation
 pydantic==2.5.0
-pydantic-settings
+pydantic-settings==2.1.0
+
 # File upload support
 python-multipart==0.0.6
 
