@@ -63,11 +63,6 @@ graph TB
 - **Evaluation**: IoU-based metrics with precision, recall, and F1 scores
 - **Storage**: Separate training data (`storage/images/`) from API uploads (`api_uploads/`)
 
-**Why This Approach Works:**
-- Data-driven learning vs manual parameter tuning
-- Robust to lighting conditions and complex backgrounds
-- Scalable to new coin types with additional training data
-
 ### Challenge 2: CSV Processing
 
 **Technical Implementation:**
@@ -83,19 +78,15 @@ graph TB
 
 ## Production Considerations
 
-Both solutions implement best practices:
-
 **Reliability:**
 - Detailed error handling and input validation
 - Database transaction management
-- Graceful fallback mechanisms
-- Structured logging throughout
+- Fallback mechanisms
 
 **Maintainability:**
-- Clean separation of concerns
 - Type-safe APIs with Pydantic schemas
 - Auto-generated documentation via FastAPI
-- Docker containerization for consistent deployment
+- Docker containerization for deployment
 
 **Data Integrity:**
 - Training/testing data separation
