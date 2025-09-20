@@ -91,14 +91,15 @@ challenge1/
 │   │   ├── database.py       # SQLite models
 │   │   └── schemas.py        # Pydantic schemas
 │   ├── services/
-│   │   ├── coin_detector.py        # Fallback Hough detector
-│   │   ├── yolo__detector.py  # Trained YOLOv8 detector
-│   │   └── storage.py              # Image storage service
+│   │   ├── coin_detector.py     # Fallback Hough detector
+│   │   ├── yolo_detector.py     # Trained YOLOv8 detector
+│   │   ├── storage.py           # Image storage service
+│   │   ├── convert_coco_to_yolo.py  # Annotation converter
+│   │   └── evaluation.py        # Model evaluation metrics
 │   └── main.py               # Application entry
 ├── storage/
 │   └── images/               # Image storage with COCO annotations
-├── convert_coco_to_yolo.py   # Annotation converter
-├── train_yolo.py # Model training script
+├── train_yolo.py             # Model training script
 └── requirements.txt
 ```
 
@@ -113,11 +114,11 @@ pip install -r requirements.txt
 ### 2. Train the Model
 
 ```bash
-python train_yolo.py
+python -m app.train_yolo
 ```
 
 - Converts COCO annotations → YOLO format
-- Splits data: 80% train (152 images), 20% validation (39 images)
+- Splits data: 70% train, 30% validation
 - Trains YOLOv8s for 100 epochs
 - Saves best model as `coin_model_final.pt`
 
@@ -203,15 +204,6 @@ pytest tests/ -v --cov=app --cov-report=html
 - **Images** table: Metadata storage
 - **Coins** table: Detection results (linked to images)
 
-## Performance
-
-| Metric           | Value   |
-|------------------|--------:|
-| Training Data    | 152 images |
-| Validation Data  | 39 images  |
-| Detection Speed  | ~100ms/image |
-| Model Size       | ~22MB      |
-| Accuracy         | High (trained) |
 
 ## 🚨 Data Leakage Protection
 
@@ -219,7 +211,7 @@ Detects usage of training images and outputs a warning:
 
 ```json
 {
-  "message": "Detected 5 coins ⚠️ WARNING: This image was in the training set!"
+  "message": "Detected 5 coins  WARNING: This image was in the training set!"
 }
 ```
 

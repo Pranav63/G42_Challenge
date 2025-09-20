@@ -1,7 +1,7 @@
 from ultralytics import YOLO
 import yaml
 from pathlib import Path
-from convert_coco_to_yolo import convert_coco_to_yolo
+from app.services.convert_coco_to_yolo import convert_coco_to_yolo
 
 
 def train():
@@ -27,7 +27,6 @@ def train():
         patience=20,
     )
 
-    # Save best model
     model.save("coin_model_final.pt")
     print("Training complete!")
 

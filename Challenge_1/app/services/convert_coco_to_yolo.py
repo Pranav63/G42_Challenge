@@ -24,9 +24,9 @@ def convert_coco_to_yolo():
             image_annotations[img_id] = []
         image_annotations[img_id].append(ann)
 
-    # Split 80/20
+    # Split 70/30
     all_images = list(coco["images"])
-    split = int(len(all_images) * 0.8)
+    split = int(len(all_images) * 0.7)
     train_images = all_images[:split]
     val_images = all_images[split:]
 
@@ -83,7 +83,7 @@ def convert_coco_to_yolo():
         f"Converted {len(train_images)} training images and {len(val_images)} validation images"
     )
 
-    # Save list of training images to prevent data leakage
+    # Saving list of training images to prevent data leakage
     train_filenames = [img["file_name"] for img in train_images]
     with open("training_images_list.json", "w") as f:
         json.dump(train_filenames, f)
