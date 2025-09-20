@@ -1,8 +1,3 @@
-"""
-Local file storage service.
-Why local storage: No external dependencies, simple deployment, cost-free.
-"""
-
 import uuid
 from pathlib import Path
 from typing import Optional
@@ -25,25 +20,17 @@ class StorageService:
     def save_image(
         self, image_bytes: bytes, filename: Optional[str] = None
     ) -> tuple[str, str]:
-        """
-        Save image to local storage.
 
-        Returns:
-            Tuple of (image_id, file_path)
-        """
         # Generate unique ID for image
         image_id = str(uuid.uuid4())
 
-        # Determine file extension
         ext = ".jpg"
         if filename:
             ext = Path(filename).suffix or ".jpg"
 
-        # Create file path
         file_name = f"{image_id}{ext}"
         file_path = self.storage_path / file_name
 
-        # Save image
         with open(file_path, "wb") as f:
             f.write(image_bytes)
 
@@ -52,7 +39,6 @@ class StorageService:
 
     def load_image(self, image_id: str) -> Optional[np.ndarray]:
         """Load image from storage as numpy array."""
-        # Try common extensions
         for ext in [".jpg", ".jpeg", ".png", ".bmp"]:
             file_path = self.storage_path / f"{image_id}{ext}"
             if file_path.exists():
@@ -69,7 +55,6 @@ class StorageService:
         if not full_path.exists():
             raise FileNotFoundError(f"Image not found: {file_path}")
 
-        # Load image
         image = cv2.imread(str(full_path))
         if image is None:
             raise ValueError(f"Could not read image: {file_path}")

@@ -1,6 +1,5 @@
 """
 FastAPI endpoints for coin detection.
-Why FastAPI: Modern, fast, automatic API documentation, type safety.
 """
 
 from fastapi import APIRouter, UploadFile, File, HTTPException, Depends
@@ -21,11 +20,9 @@ from app.services.evaluation import Evaluator
 router = APIRouter()
 logger = logging.getLogger(__name__)
 
-# Initialize services
 storage = StorageService()
 fallback_detector = CoinDetector()
 
-# Load YOLO if available
 try:
     from app.services.yolo_detector import YOLOFinalDetector
 
@@ -43,7 +40,7 @@ async def upload_image(
 ):
     """
     Upload image and detect coins using trained YOLO model.
-    Warns if testing on training data.
+    Warning given if testing on training data.
     """
     start_time = time.time()
 
@@ -55,34 +52,29 @@ async def upload_image(
         raise HTTPException(400, "File too large (max 10MB)")
 
     try:
-        # Read and save image
         image_bytes = await file.read()
         image_id, file_path = storage.save_image(image_bytes, file.filename)
 
-        # Convert to numpy array
         image_array = storage.bytes_to_array(image_bytes)
         height, width = image_array.shape[:2]
 
-        # Detect coins
         warning_message = ""
 
         if has_yolo:
-            # Use trained YOLO
+            # Using trained YOLO
             detected_coins, is_training_image = yolo_detector.detect(
                 image_array, file.filename
             )
 
             if is_training_image:
-                warning_message = " ⚠️ WARNING: This image was in the training set!"
+                warning_message = "  warning: This image was in the training set"
                 logger.warning(
                     f"Data leakage detected: {file.filename} was used in training"
                 )
         else:
-            # Fallback detector
             detected_coins = fallback_detector.detect(image_array)
             warning_message = " (Using fallback - YOLO not available)"
 
-        # Save to database
         image_record = database.ImageModel(
             id=image_id,
             filename=file.filename,
@@ -93,7 +85,6 @@ async def upload_image(
         )
         db.add(image_record)
 
-        # Save coins
         coin_responses = []
         for coin in detected_coins:
             coin_record = database.CoinModel(
@@ -149,7 +140,7 @@ async def list_images(db: Session = Depends(database.get_db)):
             id=image.id,
             filename=image.filename,
             coin_count=image.coin_count,
-            upload_time=image.upload_time,  # Use upload_time from your model
+            upload_time=image.upload_time,
         )
         for image in images
     ]
@@ -172,7 +163,7 @@ async def get_image(image_id: str, db: Session = Depends(database.get_db)):
             centroid=(
                 coin.centroid_x,
                 coin.centroid_y,
-            ),  # Keep as int since your model uses Integer
+            ),
             radius=coin.radius,
             confidence=coin.confidence,
         )
@@ -186,7 +177,7 @@ async def get_image(image_id: str, db: Session = Depends(database.get_db)):
         height=image.height,
         coin_count=image.coin_count,
         coins=coin_responses,
-        upload_time=image.upload_time,  # Use upload_time from your model
+        upload_time=image.upload_time,
         file_path=image.file_path,
     )
 
@@ -226,7 +217,7 @@ async def get_coin_details(coin_id: str, db: Session = Depends(database.get_db))
         centroid=(coin.centroid_x, coin.centroid_y),
         radius=coin.radius,
         confidence=coin.confidence,
-        created_at=coin.created_at,  # This field exists in CoinModel
+        created_at=coin.created_at,
     )
 
 
@@ -240,23 +231,18 @@ async def get_image_mask(image_id: str, db: Session = Depends(database.get_db)):
     coins = db.query(database.CoinModel).filter_by(image_id=image_id).all()
 
     try:
-        # Load original image
         image_array = storage.load_image_by_path(image.file_path)
 
-        # Create mask
         mask = np.zeros((image.height, image.width), dtype=np.uint8)
 
-        # Draw circles on mask for each detected coin
         for coin in coins:
             center = (int(coin.centroid_x), int(coin.centroid_y))
             radius = int(coin.radius)
             cv2.circle(mask, center, radius, 255, -1)  # Filled circle
             cv2.circle(mask, center, radius, 128, 2)  # Border
 
-        # Create side-by-side visualization
         combined = create_mask_visualization(image_array, mask)
 
-        # Encode as PNG
         _, buffer = cv2.imencode(".png", combined)
 
         return Response(
@@ -276,43 +262,26 @@ async def evaluate_detection(
 ):
     """
     Evaluate detection performance using IoU metrics.
-
-    Example request body:
-    {
-        "predictions": [
-            {"bbox": [10, 20, 50, 50]}
-        ],
-        "ground_truth": [
-            {"bbox": [12, 22, 48, 48]}
-        ]
-    }
     """
     evaluator = Evaluator(iou_threshold=iou_threshold)
     metrics = evaluator.evaluate(predictions, ground_truth)
     return schemas.EvaluationMetrics(**metrics)
 
 
-# Helper function for mask visualization
 def create_mask_visualization(image: np.ndarray, mask: np.ndarray) -> np.ndarray:
     """Create side-by-side visualization of image and mask."""
-    # Ensure image is in color
     if len(image.shape) == 2:
         image = cv2.cvtColor(image, cv2.COLOR_GRAY2BGR)
     elif image.shape[2] == 4:  # RGBA
         image = cv2.cvtColor(image, cv2.COLOR_BGRA2BGR)
 
-    # Convert mask to color for visualization
     mask_colored = cv2.cvtColor(mask, cv2.COLOR_GRAY2BGR)
 
-    # Create overlay version
     overlay = image.copy()
     overlay[mask > 0] = [0, 255, 0]  # Green for detected areas
     blended = cv2.addWeighted(image, 0.7, overlay, 0.3, 0)
 
-    # Create side-by-side comparison
     combined = np.hstack([image, mask_colored, blended])
-
-    # Add labels
     font = cv2.FONT_HERSHEY_SIMPLEX
     cv2.putText(combined, "Original", (10, 30), font, 1, (255, 255, 255), 2)
     cv2.putText(

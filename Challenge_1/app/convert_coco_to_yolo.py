@@ -8,17 +8,15 @@ def convert_coco_to_yolo():
     with open("storage/images/_annotations.coco.json", "r") as f:
         coco = json.load(f)
 
-    # Create directories
     Path("yolo_data/images/train").mkdir(parents=True, exist_ok=True)
     Path("yolo_data/images/val").mkdir(parents=True, exist_ok=True)
     Path("yolo_data/labels/train").mkdir(parents=True, exist_ok=True)
     Path("yolo_data/labels/val").mkdir(parents=True, exist_ok=True)
 
-    # Create image_id to filename mapping
+    # image_id to filename mapping
     id_to_file = {img["id"]: img["file_name"] for img in coco["images"]}
     id_to_dims = {img["id"]: (img["width"], img["height"]) for img in coco["images"]}
 
-    # Group annotations by image
     image_annotations = {}
     for ann in coco["annotations"]:
         img_id = ann["image_id"]
@@ -26,26 +24,23 @@ def convert_coco_to_yolo():
             image_annotations[img_id] = []
         image_annotations[img_id].append(ann)
 
-    # Split 80/20 (152 train, 39 val)
+    # Split 80/20
     all_images = list(coco["images"])
     split = int(len(all_images) * 0.8)
     train_images = all_images[:split]
     val_images = all_images[split:]
 
-    # Process training images
     for img in train_images:
         img_id = img["id"]
         filename = img["file_name"]
         width = img["width"]
         height = img["height"]
 
-        # Copy image
         src = f"storage/images/{filename}"
         dst = f"yolo_data/images/train/{filename}"
         if Path(src).exists():
             shutil.copy(src, dst)
 
-        # Create label file
         label_path = f"yolo_data/labels/train/{Path(filename).stem}.txt"
         with open(label_path, "w") as f:
             if img_id in image_annotations:
@@ -53,7 +48,7 @@ def convert_coco_to_yolo():
                     # COCO bbox format: [x_min, y_min, width, height]
                     x_min, y_min, bbox_w, bbox_h = ann["bbox"]
 
-                    # Convert to YOLO format: [x_center, y_center, width, height] (normalized)
+                    # YOLO format: [x_center, y_center, width, height] (normalized)
                     x_center = (x_min + bbox_w / 2) / width
                     y_center = (y_min + bbox_h / 2) / height
                     w_norm = bbox_w / width
@@ -62,7 +57,6 @@ def convert_coco_to_yolo():
                     # Class 0 (coin)
                     f.write(f"0 {x_center} {y_center} {w_norm} {h_norm}\n")
 
-    # Process validation images (same logic)
     for img in val_images:
         img_id = img["id"]
         filename = img["file_name"]

@@ -1,15 +1,15 @@
-
 import pytest
 import numpy as np
 import cv2
 from unittest.mock import patch
 from app.services.coin_detector import CoinDetector, DetectedCoin
 
+
 class TestCoinDetector:
     @pytest.fixture
     def detector(self):
         return CoinDetector()
-    
+
     @pytest.fixture
     def sample_image(self):
         """Create a sample image with circles drawn."""
@@ -33,10 +33,10 @@ class TestCoinDetector:
         assert len(coins) >= 0  # May detect 0 or more coins
         if coins:
             coin = coins[0]
-            assert hasattr(coin, 'id')
-            assert hasattr(coin, 'centroid')
-            assert hasattr(coin, 'radius')
-            assert hasattr(coin, 'bounding_box')
+            assert hasattr(coin, "id")
+            assert hasattr(coin, "centroid")
+            assert hasattr(coin, "radius")
+            assert hasattr(coin, "bounding_box")
             assert 0 <= coin.confidence <= 1
 
     def test_grayscale_conversion(self, detector):
@@ -59,17 +59,21 @@ class TestCoinDetector:
         coins = detector.detect(empty_image)
         assert coins == []
 
-    @pytest.mark.parametrize("radius,expected", [
-        (10, False),   # Too small
-        (50, True),    # In range
-        (150, False),  # Too large
-    ])
+    @pytest.mark.parametrize(
+        "radius,expected",
+        [
+            (10, False),  # Too small
+            (50, True),  # In range
+            (150, False),  # Too large
+        ],
+    )
     def test_radius_filtering(self, detector, radius, expected):
         """Test that detector respects radius constraints."""
         image = np.zeros((300, 300), dtype=np.uint8)
         cv2.circle(image, (150, 150), radius, 255, -1)
-        with patch.object(detector, 'min_radius', 20), \
-             patch.object(detector, 'max_radius', 100):
+        with patch.object(detector, "min_radius", 20), patch.object(
+            detector, "max_radius", 100
+        ):
             coins = detector.detect(image)
             if expected:
                 assert len(coins) > 0

@@ -40,9 +40,7 @@ class YOLOFinalDetector:
     ) -> Tuple[List[DetectedCoin], bool]:
         """
         Detect coins and check for data leakage.
-        Returns: (coins_list, is_training_image)
         """
-        # Check if this was a training image
         is_training_image = False
         if filename:
             basename = Path(filename).name

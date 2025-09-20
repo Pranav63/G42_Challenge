@@ -1,13 +1,15 @@
-# ML Engineer Assignment Solutions
-
-Production-ready computer vision APIs demonstrating advanced image processing capabilities with professional ML practices.
+# ML Engineer G42 assignment Solutions
 
 ## Project Overview
 
-This repository contains two sophisticated computer vision solutions built for the ML Engineer assignment:
+This repository contains two computer vision solutions built for the G42 assignment:
 
 1. **Coin Detection API**: YOLOv8-based coin detection with transfer learning and data leakage protection
-2. **Image Processing Pipeline**: High-performance CSV data processing with resizing and visualization
+2. **Image Processing Pipeline**: CSV data processing with resizing and visualization
+
+## Github Pages Docs
+
+`https://pranav63.github.io/G42_Challenge/`
 
 ## System Architecture
 

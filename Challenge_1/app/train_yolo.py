@@ -1,10 +1,10 @@
 from ultralytics import YOLO
 import yaml
 from pathlib import Path
+from convert_coco_to_yolo import convert_coco_to_yolo
 
 
 def train():
-    # Create YOLO config
     data_config = {
         "path": str(Path("yolo_data").absolute()),
         "train": "images/train",
@@ -17,11 +17,11 @@ def train():
         yaml.dump(data_config, f)
 
     # Train model
-    model = YOLO("yolov8s.pt")  # Use small model (better than nano)
+    model = YOLO("yolov8s.pt")
 
-    results = model.train(
+    model.train(
         data="yolo_data/data.yaml",
-        epochs=100,  # More epochs since we have good data
+        epochs=30,
         imgsz=640,
         batch=16,
         patience=20,
@@ -33,10 +33,7 @@ def train():
 
 
 if __name__ == "__main__":
-    # First convert annotations
-    from convert_coco_to_yolo import convert_coco_to_yolo
 
     convert_coco_to_yolo()
 
-    # Then train
     train()

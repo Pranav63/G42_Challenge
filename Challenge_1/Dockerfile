@@ -2,28 +2,21 @@ FROM python:3.10-slim
 
 WORKDIR /app
 
-# Install OpenCV dependencies
 RUN apt-get update && apt-get install -y \
-    libgl1-mesa-glx \
-    libglib2.0-0 \
-    libsm6 \
-    libxext6 \
-    libxrender-dev \
-    libgomp1 \
+    libgl1 libglx-mesa0 libglib2.0-0 libsm6 \
+    libxext6 libxrender-dev libgomp1 libgthread-2.0-0 \
     && rm -rf /var/lib/apt/lists/*
 
-# Copy requirements and install
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy application code
+# Copy pre-trained model (build locally first) - Follow README.md
+COPY coin_model_final.pt .
+COPY training_images_list.json .
+
 COPY app/ ./app/
 
-# Create necessary directories
-RUN mkdir -p storage/images logs
+RUN mkdir -p api_uploads logs
 
-# Expose port
 EXPOSE 8000
-
-# Run the application
 CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]

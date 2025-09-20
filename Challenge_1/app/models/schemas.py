@@ -33,7 +33,7 @@ class CoinDetailResponse(BaseModel):
     centroid: Tuple[int, int]
     radius: int
     confidence: float
-    created_at: datetime  # This matches your CoinModel
+    created_at: datetime
 
 
 class EvaluationMetrics(BaseModel):
@@ -47,14 +47,13 @@ class EvaluationMetrics(BaseModel):
     false_negatives: int = Field(ge=0)
 
 
-# New schemas to match your database structure
 class ImageListResponse(BaseModel):
     """Brief image information for listing."""
 
     id: str
     filename: Optional[str]
     coin_count: int
-    upload_time: datetime  # Matches your ImageModel.upload_time
+    upload_time: datetime
 
 
 class ImageResponse(BaseModel):
@@ -66,5 +65,5 @@ class ImageResponse(BaseModel):
     height: int
     coin_count: int
     coins: List[CoinResponse]
-    upload_time: datetime  # Matches your ImageModel.upload_time
+    upload_time: datetime
     file_path: Optional[str] = None

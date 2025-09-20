@@ -1,13 +1,9 @@
 
 # Challenge 1: Coin Detection API
 
-A production-ready REST API for detecting circular objects (coins) in images using computer vision techniques.
+REST API for detecting circular objects (coins) in images using computer vision YOLOv8.
 
-## 🎯 Overview
-
-Production-ready REST API for coin detection in images, powered by YOLOv8 and trained on professionally annotated data.
-
-## 🏗️ Architecture
+## Architecture
 
 ```mermaid
 graph TB
@@ -70,8 +66,6 @@ sequenceDiagram
     DB-->>API: Confirm
     API-->>Client: Return results
 ```
-Here is a properly formatted README using Markdown, with clear sections and improved structure for clarity and professionalism:
-
 
 ### Why Move Beyond Hough Circles?
 
@@ -86,7 +80,7 @@ Here is a properly formatted README using Markdown, with clear sections and impr
 - **Transfer learning** on pre-trained YOLOv8
 - **Actual data**: 152 images for training, 39 for validation
 
-## 📁 Project Structure
+## Project Structure
 
 ```
 challenge1/
@@ -98,29 +92,28 @@ challenge1/
 │   │   └── schemas.py        # Pydantic schemas
 │   ├── services/
 │   │   ├── coin_detector.py        # Fallback Hough detector
-│   │   ├── yolo_final_detector.py  # Trained YOLOv8 detector
+│   │   ├── yolo__detector.py  # Trained YOLOv8 detector
 │   │   └── storage.py              # Image storage service
 │   └── main.py               # Application entry
 ├── storage/
 │   └── images/               # Image storage with COCO annotations
 ├── convert_coco_to_yolo.py   # Annotation converter
-├── train_with_annotations.py # Model training script
+├── train_yolo.py # Model training script
 └── requirements.txt
 ```
 
-## 🚀 Setup & Training
+## Setup & Training
 
 ### 1. Install Dependencies
 
 ```bash
 pip install -r requirements.txt
-pip install ultralytics       # For YOLO
 ```
 
 ### 2. Train the Model
 
 ```bash
-python train_with_annotations.py
+python train_yolo.py
 ```
 
 - Converts COCO annotations → YOLO format
@@ -168,7 +161,7 @@ curl -X POST "http://localhost:8000/api/v1/images/upload" \
 
 ***
 
-## 🛠️ Technology Stack
+## Tech Stack
 
 | Component   | Technology     | Why We Chose It                                  |
 |:-----------:|:--------------|:-------------------------------------------------|
@@ -179,7 +172,7 @@ curl -X POST "http://localhost:8000/api/v1/images/upload" \
 | Training    | Ultralytics    | Best YOLO implementation                         |
 
 
-## 🔧 Implementation Details
+## Implementation Details
 
 ### Data Pipeline
 
@@ -188,12 +181,12 @@ curl -X POST "http://localhost:8000/api/v1/images/upload" \
     - Normalizes coordinates
     - Splits train/validation
 
-- **Training**: `train_with_annotations.py`
+- **Training**: `train_yolo.py`
     - YOLOv8s transfer learning
     - Early stopping (patience=20)
     - Best model selection (validation mAP)
 
-- **Inference**: `yolo_final_detector.py`
+- **Inference**: `yolo_detector.py`
     - Confidence threshold: 0.25
     - IoU threshold: 0.45
     - Data leakage detection
@@ -203,7 +196,7 @@ curl -X POST "http://localhost:8000/api/v1/images/upload" \
 - **Images** table: Metadata storage
 - **Coins** table: Detection results (linked to images)
 
-## 📊 Performance
+## Performance
 
 | Metric           | Value   |
 |------------------|--------:|
@@ -222,6 +215,4 @@ Detects usage of training images and outputs a warning:
   "message": "Detected 5 coins ⚠️ WARNING: This image was in the training set!"
 }
 ```
-
-***
 

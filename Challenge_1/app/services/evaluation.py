@@ -1,7 +1,6 @@
 """
 Model evaluation using Intersection over Union (IoU).
-Why IoU: Standard metric for object detection,
-measures overlap between predicted and actual bounding boxes.
+IoU: This measures overlap between predicted and actual bounding boxes.
 """
 
 from typing import List, Dict, Tuple
@@ -14,21 +13,12 @@ class Evaluator:
     """Evaluate coin detection performance."""
 
     def __init__(self, iou_threshold: float = 0.5):
-        """
-        Args:
-            iou_threshold: Minimum IoU to consider detection as correct.
-                         0.5 is standard for object detection.
-        """
         self.iou_threshold = iou_threshold
 
     def calculate_iou(self, box1: Tuple, box2: Tuple) -> float:
         """
         Calculate Intersection over Union between two bounding boxes.
-
         IoU = Area of Overlap / Area of Union
-
-        Why IoU: Industry standard metric that handles both position
-        and size accuracy in a single measure.
         """
         x1, y1, w1, h1 = box1
         x2, y2, w2, h2 = box2
@@ -54,15 +44,11 @@ class Evaluator:
     def evaluate(self, predictions: List[Dict], ground_truth: List[Dict]) -> Dict:
         """
         Evaluate predictions against ground truth.
-
-        Returns:
-            Dictionary with precision, recall, and F1 score.
         """
         true_positives = 0
         false_positives = 0
         matched_gt = set()
 
-        # Match each prediction to ground truth
         for pred in predictions:
             best_iou = 0
             best_gt_idx = -1
@@ -84,7 +70,6 @@ class Evaluator:
 
         false_negatives = len(ground_truth) - len(matched_gt)
 
-        # Calculate metrics
         precision = (
             true_positives / (true_positives + false_positives)
             if (true_positives + false_positives) > 0
