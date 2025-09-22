@@ -80,7 +80,7 @@ sequenceDiagram
 - **Transfer learning** on pre-trained YOLOv8
 - **Actual data**: 152 images for training, 39 for validation
 
-## Project Structure
+## Project Structure (before training)
 
 ```
 challenge1/
@@ -102,25 +102,117 @@ challenge1/
 ├── train_yolo.py             # Model training script
 └── requirements.txt
 ```
+Here is your README section, refined for clarity and professionalism, and using ✅ for included items and ❌ for generated/missing items:
+
+***
 
 ## Setup & Training
 
-### 1. Install Dependencies
+### Prerequisites for Training
 
-```bash
-pip install -r requirements.txt
+⚠️ **Important**: Training data is **not included** in this repository due to size constraints. You will need:
+
+1. **Image dataset with COCO annotations**  
+   ```
+   storage/
+     └── images/
+         ├── _annotations.coco.json   # COCO format annotations
+         ├── image_001.jpg            # Training images
+         ├── image_002.jpg
+         └── ...
+   ```
+
+2. **COCO annotation structure expectation**
+   ```json
+   {
+     "images": [
+       { "id": 1, "file_name": "image_001.jpg", "width": 640, "height": 480 }
+     ],
+     "annotations": [
+       { "id": 1, "image_id": 1, "category_id": 1, "bbox": [x, y, w, h] }
+     ],
+     "categories": [
+       { "id": 1, "name": "coin" }
+     ]
+   }
+   ```
+
+
+### Train YOLOv8 Model
+
+1. **Install Dependencies**
+    ```bash
+    pip install -r requirements.txt
+    ```
+
+2. **Prepare Your Dataset**
+    ```bash
+    # Create required directory structure
+    mkdir -p storage/images
+
+    # Place images and COCO annotations:
+    # - Images: storage/images/*.jpg
+    # - Annotations: storage/images/_annotations.coco.json
+    ```
+
+3. **Train the Model**
+    ```bash
+    python -m app.train_yolo
+    ```
+    During training:
+    - Converts COCO annotations → YOLO format in `yolo_data/`
+    - Splits data: 70:30
+    - Trains YOLOv8s for 30 epochs (with early stopping)
+    - Saves best model as `coin_model_final.pt`
+    - Creates `training_images_list.json` to prevent data leakage
+
+4. **Verify Training Output**
+    ```
+    yolo_data/
+      ├── data.yaml
+      ├── images/
+      │     ├── train/      # Training images
+      │     └── val/        # Validation images
+      └── labels/
+            ├── train/      # YOLO format labels
+            └── val/        # YOLO format labels
+
+    coin_model_final.pt          # Trained model
+    training_images_list.json    # Training set filenames
+    ```
+
+***
+
+## Detector Behavior
+
+The API uses a **fallback system**:
+
+1. **Primary**: YOLOv8 model (`coin_model_final.pt`) if available  
+2. **Fallback**: Hough Circle Transform if no trained model
+
+- **Without trained model**: Uses classical computer vision; functional but less accurate on textured backgrounds.
+- **With trained model**: Enhanced accuracy due to deep learning.
+
+
+***
+
+## Project Structure (after training)
+
 ```
-
-### 2. Train the Model
-
-```bash
-python -m app.train_yolo
+challenge1/
+├── app/                         # Included in repo
+│   ├── api/
+│   ├── models/
+│   ├── services/
+│   └── main.py
+├── storage/                     # Not in repo (training data)
+│   └── images/                  #   - Contains images + COCO annotations
+├── yolo_data/                   #  Generated during training
+├── coin_model_final.pt          #  Generated after training
+├── training_images_list.json    #  Generated during training
+├── train_yolo.py                # Included in repo
+└── requirements.txt             # Included in repo
 ```
-
-- Converts COCO annotations → YOLO format
-- Splits data: 70% train, 30% validation
-- Trains YOLOv8s for 100 epochs
-- Saves best model as `coin_model_final.pt`
 
 ### 3. Run the API
 
