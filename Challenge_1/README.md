@@ -102,15 +102,13 @@ challenge1/
 ├── train_yolo.py             # Model training script
 └── requirements.txt
 ```
-Here is your README section, refined for clarity and professionalism, and using ✅ for included items and ❌ for generated/missing items:
-
 ***
 
 ## Setup & Training
 
 ### Prerequisites for Training
 
-⚠️ **Important**: Training data is **not included** in this repository due to size constraints. You will need:
+⚠️ **Important**: Training data is **not included** in this repository due to size constraints. Local setup requires:
 
 1. **Image dataset with COCO annotations**  
    ```
